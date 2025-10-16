@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유기동물 조회 - 이어주개</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-item { display: flex; align-items: center; height: 80px; }
+        .dropdown-menu { min-width: 160px; }
+        .focus-pink:focus {
+             --tw-ring-color: #ec4899 !important; /* pink-500 */
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* 상태 태그 스타일 */
+        .status-tag {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        /* 🚩 보호중 및 입양대기 색상 */
+        .tag-protected { background-color: #fef9c3; color: #a16207; } /* Yellow-100 / Amber-700 */
+        .tag-waiting { background-color: #dcfce7; color: #15803d; } /* Green-100 / Green-700 */
+        
+        /* info-icon을 작게 조정 */
+        .info-icon { width: 1rem; height: 1rem; margin-right: 0.5rem; color: #f472b6; } /* Pink-400 */
+        
+        /* 💡 유기동물 정보 항목 디자인 (개선) */
+        .animal-info-grid {
+            /* 레이블:값의 비율을 좁혀 정보를 더 촘촘하게 배열 */
+            display: grid;
+            grid-template-columns: 3.5rem 1fr; /* '성별:' 등의 레이블 너비를 좁게 설정 (3.5rem) */
+            gap: 0.4rem 0.5rem; /* 세로 간격을 줄여 촘촘하게 */
+        }
+        .animal-info-label {
+            color: #94a3b8; /* slate-400 (더 연하게) */
+            font-weight: 500;
+            text-align: left;
+        }
+        .animal-info-value {
+            color: #1e293b; /* slate-800 */
+            font-weight: 600;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header id="header" class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center h-20">
+                    <a href="main.html" class="text-4xl font-extrabold text-pink-500">이어주개</a>
+                </div>
+                
+                <nav class="hidden lg:flex lg:items-center lg:space-x-8 h-20">
+                    <div class="nav-item"><a href="서비스소개.html" class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap">서비스소개</a></div>
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-pink-500 font-bold whitespace-nowrap flex items-center">조회 서비스<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="실종_목격_동물_조회.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종/목격 동물 조회</a>
+                            <a href="#" class="block px-5 py-3 text-base text-pink-500 font-bold hover:bg-gray-100">유기동물 조회</a>
+                        </div>
+                    </div>
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">등록/제보<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="실종동물등록.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종 동물 등록</a>
+                            <a href="우리동네동물제보.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">우리 동네 동물 제보</a>
+                        </div>
+                    </div>
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">보호소/병원<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="보호소.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">보호소</a>
+                            <a href="동물병원.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">동물병원 위치</a>
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <a href="커뮤니티.html" class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap">커뮤니티</a>
+                    </div>
+                </nav>
+                
+                <div class="flex items-center space-x-3">
+                    <button id="add-stray-btn" class="hidden px-4 py-2 text-sm font-bold text-white bg-green-500 border-2 border-transparent rounded-lg shadow-sm hover:bg-green-600 transition-colors whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        유기동물 등록
+                    </button>
+                    <div id="auth-buttons" class="flex items-center space-x-3">
+                        <button id="login-btn" class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">로그인</button>
+                        <button id="signup-btn" class="px-6 py-3 text-base font-bold text-white bg-pink-500 border-2 border-transparent rounded-lg shadow-sm hover:bg-pink-600">회원가입</button>
+                    </div>
+                    <div id="user-actions" class="hidden items-center space-x-3">
+                        <div class="relative group">
+                            <button class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 flex items-center">마이페이지<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                            <div class="absolute right-0 top-20 mt-1 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                                <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">개인정보수정</a>
+                                <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종동물 관리</a>
+                            </div>
+                        </div>
+                        <button id="logout-btn" class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-16">
+        <section id="stray-animal-list" class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-extrabold text-pink-600 mb-8 text-center">광주광역시 유기동물 공고 조회</h1>
+            
+            <div id="stray-posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100">
+                    <div class="h-52 overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s" alt="믹스견 이미지" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <h2 class="text-lg font-extrabold text-slate-800 truncate">믹스견</h2>
+                            <span class="status-tag tag-protected ml-2 flex-shrink-0">보호중</span>
+                        </div>
+                        
+                        <div class="animal-info-grid text-sm mb-4">
+                            <span class="animal-info-label">성별:</span><span class="animal-info-value">수컷</span>
+                            <span class="animal-info-label">나이:</span><span class="animal-info-value">추정 3세</span>
+                            <span class="animal-info-label">색상:</span><span class="animal-info-value">갈색</span>
+                            <span class="animal-info-label">체중:</span><span class="animal-info-value">약 15kg</span>
+                        </div>
+                        
+                        <div class="space-y-2 text-sm text-slate-600">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="info-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                <span class="font-medium text-slate-700">2025-10-05</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="info-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-10.606L13.414 3.1a1.998 1.998 0 00-2.828 0L6.343 7.343" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.5V12m0 0V5.5m0 6.5h6.5m-6.5 0H5.5" /></svg>
+                                <span class="text-slate-700 truncate">광주광역시 북구 용봉동</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-3 mt-4 border-t border-gray-100">
+                            <p class="text-xs font-semibold text-pink-500 mb-2">광주광역시 동물보호센터</p>
+                            <button class="w-full py-2 text-sm font-bold text-white bg-pink-500 rounded-lg hover:bg-pink-600 transition-colors shadow-md">
+                                상세정보 보기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100">
+                    <div class="h-52 overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s" alt="코리안숏헤어 이미지" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <h2 class="text-lg font-extrabold text-slate-800 truncate">코리안숏헤어</h2>
+                            <span class="status-tag tag-protected ml-2 flex-shrink-0">보호중</span>
+                        </div>
+                        <div class="animal-info-grid text-sm mb-4">
+                            <span class="animal-info-label">성별:</span><span class="animal-info-value">암컷</span>
+                            <span class="animal-info-label">나이:</span><span class="animal-info-value">추정 2세</span>
+                            <span class="animal-info-label">색상:</span><span class="animal-info-value">회색 태비</span>
+                            <span class="animal-info-label">체중:</span><span class="animal-info-value">약 4kg</span>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-600">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="info-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                <span class="font-medium text-slate-700">2025-10-08</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="info-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-10.606L13.414 3.1a1.998 1.998 0 00-2.828 0L6.343 7.343" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.5V12m0 0V5.5m0 6.5h6.5m-6.5 0H5.5" /></svg>
+                                <span class="text-slate-700 truncate">광주광역시 서구 화정동</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-4 border-t border-gray-100">
+                            <p class="text-xs font-semibold text-pink-500 mb-2">광주광역시 동물보호센터</p>
+                            <button class="w-full py-2 text-sm font-bold text-white bg-pink-500 rounded-lg hover:bg-pink-600 transition-colors shadow-md">
+                                상세정보 보기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-100">
+                    <div class="h-52 overflow-hidden">
+                        <img src="path/to/image3.jpg" alt="골든 리트리버 이미지" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <h2 class="text-lg font-extrabold text-slate-800 truncate">골든 리트리버</h2>
+                            <span class="status-tag tag-waiting ml-2 flex-shrink-0">입양대기</span>
+                        </div>
+                        <div class="animal-info-grid text-sm mb-4">
+                            <span class="animal-info-label">성별:</span><span class="animal-info-value">암컷</span>
+                            <span class="animal-info-label">나이:</span><span class="animal-info-value">추정 5세</span>
+                            <span class="animal-info-label">색상:</span><span class="animal-info-value">황금색</span>
+                            <span class="animal-info-label">체중:</span><span class="animal-info-value">약 28kg</span>
+                        </div>
+                        <div class="space-y-2 text-sm text-slate-600">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="info-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                <span class="font-medium text-slate-700">2025-10-01</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="info-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243m10.606-10.606L13.414 3.1a1.998 1.998 0 00-2.828 0L6.343 7.343" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18.5V12m0 0V5.5m0 6.5h6.5m-6.5 0H5.5" /></svg>
+                                <span class="text-slate-700 truncate">광주광역시 동구 학동</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 mt-4 border-t border-gray-100">
+                            <p class="text-xs font-semibold text-pink-500 mb-2">광주광역시 동물보호센터</p>
+                            <button class="w-full py-2 text-sm font-bold text-white bg-pink-500 rounded-lg hover:bg-pink-600 transition-colors shadow-md">
+                                상세정보 보기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 text-center text-slate-500 hidden" id="loading-message">
+                    유기동물 정보를 불러오는 중...
+                </div>
+            </div>
+            
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400">
+        <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-3xl font-bold text-pink-400 mb-4">이어주개</p>
+                <p>&copy; 2025 Eeo-ju-gae. All rights reserved.</p>
+                <p class="mt-2 text-sm">AI 기반 반려동물 통합 플랫폼</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="add-stray-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-backdrop overflow-y-auto">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-8 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">유기동물 정보 등록</h2>
+                <button id="close-add-stray-modal" type="button" class="text-gray-400 hover:text-gray-600 text-2xl font-semibold">&times;</button>
+            </div>
+            <form id="add-stray-form" class="space-y-4">
+                <div>
+                    <label for="animal-image" class="block text-sm font-medium text-slate-700">동물 사진</label>
+                    <input type="file" id="animal-image" accept="image/*" class="mt-1 w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                </div>
+                <div>
+                    <label for="animal-kind" class="block text-sm font-medium text-slate-700">품종/종류</label>
+                    <input type="text" id="animal-kind" placeholder="예: 믹스견, 코리안숏헤어" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="animal-gender" class="block text-sm font-medium text-slate-700">성별</label>
+                        <select id="animal-gender" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white">
+                            <option value="">선택</option>
+                            <option value="수컷">수컷</option>
+                            <option value="암컷">암컷</option>
+                            <option value="미상">미상</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="animal-age" class="block text-sm font-medium text-slate-700">나이</label>
+                        <input type="text" id="animal-age" placeholder="예: 추정 3세" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="animal-color" class="block text-sm font-medium text-slate-700">색상</label>
+                        <input type="text" id="animal-color" placeholder="예: 갈색, 회색 태비" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                    <div>
+                        <label for="animal-weight" class="block text-sm font-medium text-slate-700">체중</label>
+                        <input type="text" id="animal-weight" placeholder="예: 약 15kg" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="animal-date" class="block text-sm font-medium text-slate-700">발견 날짜</label>
+                    <input type="date" id="animal-date" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label for="animal-location" class="block text-sm font-medium text-slate-700">발견 장소</label>
+                    <input type="text" id="animal-location" placeholder="예: 광주광역시 북구 용봉동" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label for="animal-shelter" class="block text-sm font-medium text-slate-700">보호소/담당기관</label>
+                    <input type="text" id="animal-shelter" placeholder="예: 광주광역시 동물보호센터" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label for="animal-phone" class="block text-sm font-medium text-slate-700">연락처</label>
+                    <input type="tel" id="animal-phone" placeholder="예: 062-123-4567" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <div>
+                    <label for="animal-status" class="block text-sm font-medium text-slate-700">상태</label>
+                    <select id="animal-status" required class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 bg-white">
+                        <option value="보호중">보호중</option>
+                        <option value="입양대기">입양대기</option>
+                        <option value="입양완료">입양완료</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full bg-green-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-green-600 transition-colors">등록하기</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="login-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">로그인</h2>
+                <button id="close-login-modal" type="button" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form class="mt-6" id="login-form">
+                <input type="text" id="login-id" placeholder="아이디" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" id="login-pw" placeholder="비밀번호" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button type="submit" class="w-full bg-pink-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-pink-600">로그인</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="signup-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">회원가입</h2>
+                <button id="close-signup-modal" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form class="mt-6">
+                <input type="email" placeholder="이메일 주소" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" placeholder="비밀번호" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" placeholder="비밀번호 확인" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button type="submit" class="w-full bg-pink-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-pink-600">가입하기</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="test.js"></script>
+    <script src="유기동물조회.js"></script>
+
+  
+
+</body>
+</html>
