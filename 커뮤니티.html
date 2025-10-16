@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티 - 이어주개</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-item { display: flex; align-items: center; height: 80px; }
+        .dropdown-menu { min-width: 160px; }
+        .focus-pink:focus {
+             --tw-ring-color: #ec4899 !important; /* pink-500 */
+        }
+
+        /* 게시물 태그 스타일 */
+        .post-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin-right: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* 🚩 태그 색상 정의 */
+        .tag-free { background-color: #f3f4f6; color: #1f2937; } /* gray-100 / gray-900 */
+        .tag-missing { background-color: #fee2e2; color: #dc2626; } /* red-100 / red-600 */
+        .tag-review { background-color: #dbeafe; color: #2563eb; } /* blue-100 / blue-600 */
+        .tag-info { background-color: #f0f9ff; color: #0ea5e9; } /* sky-100 / sky-600 */
+        
+        /* 페이지네이션 버튼 스타일 */
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.15s;
+        }
+        .page-current {
+            background-color: #1f2937; /* gray-900 */
+            color: white;
+        }
+        .page-hover:hover {
+            background-color: #e5e7eb; /* gray-200 */
+        }
+        
+        /* 모달 백드롭 */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- 🚩 HEADER -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center h-20">
+                    <a href="main.html" class="text-4xl font-extrabold text-pink-500">이어주개</a>
+                </div>
+                
+                <nav class="hidden lg:flex lg:items-center lg:space-x-8 h-20">
+                    <div class="nav-item"><a href="서비스소개.html" class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap">서비스소개</a></div>
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">조회 서비스<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종/목격 동물 조회</a>
+                            <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">유기동물 조회</a>
+                        </div>
+                    </div>
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">등록/제보<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="실종동물등록.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종 동물 등록</a>
+                            <a href="우리동네동물제보.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">우리 동네 동물 제보</a>
+                        </div>
+                    </div>
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">보호소/병원<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="보호소.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">보호소</a>
+                            <a href="동물병원.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">동물병원 위치</a>
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#" class="text-lg text-pink-500 font-bold whitespace-nowrap">커뮤니티</a>
+                    </div>
+                </nav>
+                
+                <div class="flex items-center space-x-3">
+                    <div id="auth-buttons" class="flex items-center space-x-3">
+                        <button id="login-btn" class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">로그인</button>
+                        <button id="signup-btn" class="px-6 py-3 text-base font-bold text-white bg-pink-500 border-2 border-transparent rounded-lg shadow-sm hover:bg-pink-600">회원가입</button>
+                    </div>
+                    <div id="user-actions" class="hidden items-center space-x-3">
+                        <div class="relative group">
+                            <button class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 flex items-center">마이페이지<svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                            <div class="absolute right-0 top-20 mt-1 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                                <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">개인정보수정</a>
+                                <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종동물 관리</a>
+                            </div>
+                        </div>
+                        <button id="logout-btn" class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🚩 MAIN CONTENT: 커뮤니티 목록 -->
+    <main class="pt-28 pb-16">
+        <section id="community-list" class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-extrabold text-pink-600">커뮤니티 게시판</h1>
+                    <!-- 🚩 글작성 버튼 (로그인 상태에서만 표시됨, JS에서 제어) -->
+                    <button id="write-post-btn" class="px-6 py-3 text-base font-bold text-white bg-pink-500 rounded-lg shadow-sm hover:bg-pink-600 hidden">
+                        글 작성하기
+                    </button>
+                </div>
+                
+                <!-- 💡 게시물 목록이 여기에 실시간으로 렌더링됩니다. -->
+                <div id="posts-container" class="bg-white rounded-xl shadow-lg border border-slate-200 divide-y divide-slate-100">
+                    <!-- JS에 의해 데이터가 여기에 로드됩니다. -->
+                    <div id="loading-message" class="p-6 text-center text-slate-500">게시물을 불러오는 중...</div>
+                </div>
+                
+                <!-- 💡 페이지네이션 (JS 로직에 따라 동적으로 변경될 수 있으나, 현재는 정적 UI만 유지) -->
+                <div class="flex justify-center items-center mt-12 space-x-2">
+                    <button class="page-btn text-slate-700 page-hover">이전</button>
+                    <button class="page-btn page-current">1</button>
+                    <button class="page-btn text-slate-700 page-hover">2</button>
+                    <button class="page-btn text-slate-700 page-hover">3</button>
+                    <button class="page-btn text-slate-700 page-hover">다음</button>
+                </div>
+                
+            </div>
+        </section>
+    </main>
+
+    <!-- 🚩 FOOTER -->
+    <footer class="bg-slate-800 text-slate-400">
+        <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-3xl font-bold text-pink-400 mb-4">이어주개</p>
+                <p>&copy; 2025 Eeo-ju-gae. All rights reserved.</p>
+                <p class="mt-2 text-sm">AI 기반 반려동물 통합 플랫폼</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 🚩 로그인 모달 (main.js에서 제어) -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">로그인</h2>
+                <button id="close-login-modal" type="button" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form class="mt-6" id="login-form">
+                <input type="text" id="login-id" placeholder="아이디" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" id="login-pw" placeholder="비밀번호" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button type="submit" class="w-full bg-pink-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-pink-600">로그인</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 🚩 회원가입 모달 (main.js에서 제어) -->
+    <div id="signup-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">회원가입</h2>
+                <button id="close-signup-modal" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form class="mt-6">
+                <input type="email" placeholder="이메일 주소" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" placeholder="비밀번호" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" placeholder="비밀번호 확인" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button type="submit" class="w-full bg-pink-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-pink-600">가입하기</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 🚩 글 작성 모달 -->
+    <div id="post-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-pink-600">새 게시글 작성</h2>
+                <button id="close-post-modal" type="button" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form id="new-post-form" class="mt-6 space-y-4">
+                <div>
+                    <label for="post-type" class="block text-lg font-bold text-slate-800 mb-2">게시글 분류</label>
+                    <select id="post-type" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus-pink">
+                        <option value="자유게시판">자유게시판</option>
+                        <option value="실종정보">실종정보</option>
+                        <option value="입양후기">입양후기</option>
+                        <option value="정보공유">정보공유</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="post-title" class="block text-lg font-bold text-slate-800 mb-2">제목</label>
+                    <input type="text" id="post-title" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus-pink" placeholder="제목을 입력해주세요">
+                </div>
+                <div>
+                    <label for="post-content" class="block text-lg font-bold text-slate-800 mb-2">내용</label>
+                    <textarea id="post-content" rows="6" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus-pink" placeholder="내용을 작성해주세요."></textarea>
+                </div>
+                <div class="flex justify-end pt-4">
+                    <button type="submit" class="px-8 py-3 text-lg font-bold text-white bg-pink-500 rounded-lg hover:bg-pink-600">작성 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 🚩 JS 로드 (Firebase SDK 추가) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Firestore 및 Auth 객체는 main.js의 전역 변수를 대체합니다.
+        window.firebaseApp = null;
+        window.db = null;
+        window.auth = null;
+        
+        // --- Firebase 초기화 및 인증 ---
+        
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        if (Object.keys(firebaseConfig).length > 0) {
+            window.firebaseApp = initializeApp(firebaseConfig);
+            window.db = getFirestore(window.firebaseApp);
+            window.auth = getAuth(window.firebaseApp);
+            
+            // 초기 인증 토큰 사용 (Canvas 환경)
+            const initialAuth = async () => {
+                const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (authToken) {
+                    await signInWithCustomToken(window.auth, authToken);
+                } else {
+                    await signInAnonymously(window.auth);
+                }
+            }
+            initialAuth();
+        }
+
+        // --- 게시물 렌더링 함수 ---
+        
+        function getTagClass(type) {
+            switch(type) {
+                case '실종정보': return 'tag-missing';
+                case '입양후기': return 'tag-review';
+                case '정보공유': return 'tag-info';
+                default: return 'tag-free';
+            }
+        }
+
+        function createPostElement(post) {
+            const date = post.createdAt ? new Date(post.createdAt.seconds * 1000).toISOString().split('T')[0] : '방금';
+            const views = post.views || Math.floor(Math.random() * 500);
+            const likes = post.likes || Math.floor(Math.random() * 50);
+            const comments = post.comments || Math.floor(Math.random() * 15);
+            const tagClass = getTagClass(post.type);
+
+            return `
+                <div class="p-5 hover:bg-slate-50 transition duration-150 cursor-pointer">
+                    <div class="mb-2">
+                        <span class="post-tag ${tagClass}">${post.type}</span>
+                        <span class="text-sm text-slate-500">${date}</span>
+                    </div>
+                    <div class="text-lg font-semibold text-slate-900 mb-2">
+                        ${post.title}
+                    </div>
+                    <div class="text-sm text-slate-700 mb-2">
+                        ${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-slate-500">
+                        <div class="flex items-center space-x-3">
+                            <span class="font-bold text-slate-700">${post.author || '익명'}</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.471 0 8.258 2.943 9.542 7-1.284 4.057-5.075 7-9.542 7-4.47 0-8.256-2.943-9.542-7z"></path></svg>${views}</span>
+                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>${likes}</span>
+                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.669C4.045 15.257 3 13.047 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>${comments}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Firestore 실시간 리스너 ---
+
+        if (window.db) {
+            onAuthStateChanged(window.auth, (user) => {
+                if (user) {
+                    // 로그인 시 글쓰기 버튼 표시
+                    document.getElementById('write-post-btn').classList.remove('hidden');
+                } else {
+                    // 로그아웃 시 글쓰기 버튼 숨김
+                    document.getElementById('write-post-btn').classList.add('hidden');
+                }
+            });
+
+            const postsCollectionPath = `artifacts/${appId}/public/data/community_posts`;
+            const q = query(collection(window.db, postsCollectionPath), orderBy('createdAt', 'desc'));
+            
+            onSnapshot(q, (snapshot) => {
+                const postsContainer = document.getElementById('posts-container');
+                postsContainer.innerHTML = ''; // 기존 내용 지우기
+                
+                if (snapshot.empty) {
+                    postsContainer.innerHTML = '<div class="p-6 text-center text-slate-500">아직 작성된 게시글이 없습니다. 첫 글을 작성해주세요!</div>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const post = doc.data();
+                    postsContainer.innerHTML += createPostElement(post);
+                });
+            }, (error) => {
+                console.error("Firestore Error:", error);
+                document.getElementById('posts-container').innerHTML = '<div class="p-6 text-center text-red-500">게시물을 불러오는 중 오류가 발생했습니다.</div>';
+            });
+        }
+        
+        // main.js 파일의 나머지 로직을 여기에 포함
+        document.addEventListener('DOMContentLoaded', function () {
+            // 모든 인증 및 Firestore 관련 변수는 위쪽 Module Scope에 있습니다.
+            
+            const header = document.getElementById('header');
+            if (header) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 10) header.classList.add('shadow-lg');
+                    else header.classList.remove('shadow-lg');
+                });
+            }
+
+            const loginModal = document.getElementById('login-modal');
+            const signupModal = document.getElementById('signup-modal');
+            const postModal = document.getElementById('post-modal');
+            
+            // 모달 열기/닫기 함수
+            function openModal(modal) { if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); } }
+            function closeModal(modal) { if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); } }
+
+            // 이벤트 리스너 설정
+            document.getElementById('login-btn')?.addEventListener('click', () => openModal(loginModal));
+            document.getElementById('signup-btn')?.addEventListener('click', () => openModal(signupModal));
+            document.getElementById('close-login-modal')?.addEventListener('click', () => closeModal(loginModal));
+            document.getElementById('close-signup-modal')?.addEventListener('click', () => closeModal(signupModal));
+            document.getElementById('close-post-modal')?.addEventListener('click', () => closeModal(postModal));
+
+            loginModal?.addEventListener('click', (e) => { if (e.target === loginModal) closeModal(loginModal); });
+            signupModal?.addEventListener('click', (e) => { if (e.target === signupModal) closeModal(signupModal); });
+            postModal?.addEventListener('click', (e) => { if (e.target === postModal) closeModal(postModal); });
+
+            // 글쓰기 버튼 클릭 시 로그인 상태 확인
+            document.getElementById('write-post-btn')?.addEventListener('click', () => {
+                if (window.auth?.currentUser) {
+                    openModal(postModal);
+                } else {
+                    alert("로그인이 필요합니다.");
+                    openModal(loginModal);
+                }
+            });
+
+            // --- 인증 UI 업데이트 및 처리 ---
+            
+            const authButtons = document.getElementById('auth-buttons');
+            const userActions = document.getElementById('user-actions');
+            
+            if (window.auth) {
+                onAuthStateChanged(window.auth, (user) => {
+                    if (user) {
+                        if (authButtons) authButtons.classList.add('hidden');
+                        if (userActions) { userActions.classList.remove('hidden'); userActions.classList.add('flex'); }
+                        // 비로그인 사용자에게만 실종 동물 등록 시도 시 로그인 요청
+                        // 이 로직은 main.js에 있으므로 커뮤니티 페이지에는 직접 적용할 필요가 없습니다. 
+                    } else {
+                        if (authButtons) authButtons.classList.remove('hidden');
+                        if (userActions) { userActions.classList.add('hidden'); userActions.classList.remove('flex'); }
+                    }
+                });
+
+                // 임시 로그인 로직 (TEST_ID: 1234, TEST_PASSWORD: 1234)
+                document.getElementById('login-form')?.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const idInput = document.getElementById('login-id');
+                    const pwInput = document.getElementById('login-pw');
+                    
+                    if (idInput.value.trim() === "1234" && pwInput.value.trim() === "1234") {
+                        try {
+                            // 임시 토큰 생성/사용 대신 익명 로그인으로 간단히 대체합니다.
+                            await signInAnonymously(window.auth); 
+                            alert("로그인 성공! (익명 사용자)");
+                            closeModal(loginModal);
+                        } catch (error) {
+                            console.error("Login Error:", error);
+                            alert("로그인 처리 중 오류가 발생했습니다.");
+                        }
+                    } else {
+                        alert("로그인 실패! 아이디 또는 비밀번호를 확인하세요.");
+                    }
+                });
+
+                // 로그아웃 로직
+                document.getElementById('logout-btn')?.addEventListener('click', async function() {
+                    try {
+                        await signOut(window.auth);
+                        alert("로그아웃 되었습니다.");
+                    } catch (error) {
+                         console.error("Logout Error:", error);
+                         alert("로그아웃 중 오류가 발생했습니다.");
+                    }
+                });
+                
+                // --- 글 작성 폼 제출 로직 (Firestore) ---
+                document.getElementById('new-post-form')?.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    if (!window.auth?.currentUser) {
+                        alert("글 작성을 위해 다시 로그인해주세요.");
+                        closeModal(postModal);
+                        openModal(loginModal);
+                        return;
+                    }
+                    
+                    const title = document.getElementById('post-title').value.trim();
+                    const content = document.getElementById('post-content').value.trim();
+                    const type = document.getElementById('post-type').value;
+                    const userId = window.auth.currentUser.uid;
+                    
+                    if (!title || !content) {
+                         alert("제목과 내용을 모두 입력해주세요.");
+                         return;
+                    }
+                    
+                    try {
+                        const postsCollectionPath = `artifacts/${appId}/public/data/community_posts`;
+
+                        await addDoc(collection(window.db, postsCollectionPath), {
+                            title: title,
+                            content: content,
+                            type: type,
+                            author: `사용자_${userId.substring(0, 4)}`, // 사용자 ID 기반 익명 이름
+                            authorId: userId,
+                            createdAt: serverTimestamp(),
+                            views: 0,
+                            likes: 0,
+                            comments: 0
+                        });
+                        
+                        alert("게시글이 성공적으로 작성되었습니다.");
+                        closeModal(postModal);
+                        this.reset(); // 폼 초기화
+                        
+                    } catch (error) {
+                        console.error("Firestore Post Error:", error);
+                        alert("게시글 작성 중 오류가 발생했습니다.");
+                    }
+                });
+            } else {
+                 console.error("Firebase is not initialized.");
+            }
+            
+            // 실종 동물 등록 페이지 이동 시 로그인 확인 로직 (기존 main.js 로직)
+            const registerLinks = document.querySelectorAll('a, button'); 
+            registerLinks.forEach(link => {
+                if (link.textContent.trim() === '실종 동물 등록' || link.getAttribute('href') === '실종동물등록.html') {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (window.auth?.currentUser) {
+                            window.location.href = '실종동물등록.html';
+                        } else {
+                            alert("로그인이 필요한 서비스입니다.");
+                            openModal(loginModal);
+                        }
+                    });
+                }
+            });
+
+        }); // DOMContentLoaded 끝
+    </script>
+
+</body>
+</html>
