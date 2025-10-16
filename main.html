@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이어줄개 - AI 이미지 분석 기반 실종동물 조회 통합 플랫폼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .infowindow-content {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .infowindow-content img {
+            width: 64px;
+            height: 64px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+        
+        .infowindow-status {
+            display: inline-block;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        /* 🚩 색상 변경: 실종은 red, 보호는 blue 톤 유지 */
+        .infowindow-status.missing { background-color: #fecaca; color: #b91c1c; }
+        .infowindow-status.protected { background-color: #dbeafe; color: #1e40af; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* 🚩 색상 변경: 실종은 red, 보호는 blue 톤 유지 */
+        .status-badge.missing { background-color: #fee2e2; color: #dc2626; }
+        .status-badge.protected { background-color: #dbeafe; color: #2563eb; }
+
+        .announcement-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .announcement-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        .announcement-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        
+        .announcement-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* 드롭다운 메뉴 스타일 */
+        .dropdown-menu {
+            min-width: 160px;
+        }
+        
+        /* 네비게이션 항목 높이 일관성 */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            height: 80px;
+        }
+    </style>
+    
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=7fc0573eaaceb31b52e3a3c9fa97c024&libraries=services&autoload=false" defer></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header id="header" class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center h-20">
+                    <a href="main.html" class="text-4xl font-extrabold text-pink-500">이어주개</a>
+                </div>
+                
+                <nav class="hidden lg:flex lg:items-center lg:space-x-8 h-20">
+                    <div class="nav-item">
+                        <a href="서비스소개.html" class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap">서비스소개</a>
+                    </div>
+
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">
+                            조회 서비스
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종/목격 동물 조회</a>
+                            <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">유기동물 조회</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">
+                            등록/제보
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="실종동물등록.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종 동물 등록</a>
+                            <a href="목격동물제보.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">우리 동네 동물 제보</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-item relative group">
+                        <button class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap flex items-center">
+                            보호소/병원
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="absolute left-0 top-20 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                            <a href="보호소.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">보호소</a>
+                            <a href="동물병원.html" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">동물병원 위치</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-item">
+                        <a href="#" class="text-lg text-gray-700 hover:text-pink-500 transition-colors font-medium whitespace-nowrap">커뮤니티</a>
+                    </div>
+                </nav>
+                
+                <div class="flex items-center space-x-3">
+                    <div id="auth-buttons" class="flex items-center space-x-3">
+                        <button id="login-btn" class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">로그인</button>
+                        <button id="signup-btn" class="px-6 py-3 text-base font-bold text-white bg-pink-500 border-2 border-transparent rounded-lg shadow-sm hover:bg-pink-600">회원가입</button>
+                    </div>
+                    <div id="user-actions" class="hidden items-center space-x-3">
+                        <div class="relative group">
+                            <button class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 flex items-center">
+                                마이페이지
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="absolute right-0 top-20 mt-1 w-56 bg-white rounded-md shadow-lg py-2 z-10 hidden group-hover:block dropdown-menu">
+                                <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">개인정보수정</a>
+                                <a href="#" class="block px-5 py-3 text-base text-gray-700 hover:bg-gray-100">실종동물 관리</a>
+                            </div>
+                        </div>
+                        <button id="logout-btn" class="px-6 py-3 text-base font-bold text-gray-700 bg-white border-2 border-gray-300 rounded-lg shadow-sm hover:bg-gray-100">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <section id="home" class="bg-sky-50 pt-12 pb-12">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight" style="line-height: 1.2;">
+                    <span class="text-pink-500">AI</span>와 함께,잃어버린 반려동물을 다시 당신의 품으로
+                </h1>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+                    '이어주개'는 첨단 AI 기술과 따뜻한 이웃의 마음을 연결하여,<br>
+                    실종/유기동물에게 가장 빠르고 확실한 재회의 길을 찾아주는 통합 플랫폼 입니다.
+                </p>
+                <div class="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <a href="실종동물등록.html" class="w-full sm:w-auto inline-block bg-pink-500 text-white font-bold text-lg px-10 py-4 rounded-lg shadow-lg hover:bg-pink-600 transition-transform hover:scale-105">
+                        실종 동물 등록
+                    </a>
+                    <a href="#" class="w-full sm:w-auto inline-block bg-white text-slate-700 font-bold text-lg px-10 py-4 rounded-lg shadow-lg hover:bg-slate-100 transition-transform hover:scale-105 border-2 border-pink-200">
+                        우리 동네 동물 제보
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="realtime-status" class="pb-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="w-full">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">내 주변 실종/보호 동물</h2>
+                        <div id="map" class="w-full h-[500px] rounded-2xl shadow-lg border border-pink-200"></div>
+                    </div>
+                    
+                    <div class="w-full">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">주변의 도움이 필요해요!</h2>
+                        <div class="announcement-list h-[500px] overflow-y-auto space-y-3 pr-2">
+                             <div class="bg-white p-3 rounded-xl shadow border border-pink-200 flex items-center gap-3">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s" alt="푸들" class="w-24 h-24 rounded-lg object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-bold text-base">푸들 / 3살</h3>
+                                    <p class="text-slate-600 text-xs mt-1"><span class="status-badge missing">실종</span> <span class="text-slate-600">광주 서구 풍암호수공원</span></p>
+                                    <p class="text-slate-400 text-xs mt-1">1시간 전</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-xl shadow border border-blue-200 flex items-center gap-3">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s" alt="코숏" class="w-24 h-24 rounded-lg object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-bold text-base">코숏 / 1살 추정</h3>
+                                    <p class="text-slate-600 text-xs mt-1"><span class="status-badge protected">보호</span> <span class="text-slate-600">광주 서구 금호동</span></p>
+                                    <p class="text-slate-400 text-xs mt-1">3시간 전</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-xl shadow border border-pink-200 flex items-center gap-3">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s" alt="믹스견" class="w-24 h-24 rounded-lg object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-bold text-base">믹스견 / 5살</h3>
+                                    <p class="text-slate-600 text-xs mt-1"><span class="status-badge missing">실종</span> <span class="text-slate-600">광주 남구 월드컵경기장</span></p>
+                                    <p class="text-slate-400 text-xs mt-1">8시간 전</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-xl shadow border border-pink-200 flex items-center gap-3">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s" alt="러시안블루" class="w-24 h-24 rounded-lg object-cover flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-bold text-base">러시안블루 / 2살</h3>
+                                    <p class="text-slate-600 text-xs mt-1"><span class="status-badge missing">실종</span> <span class="text-slate-600">광주 북구 용봉동</span></p>
+                                    <p class="text-slate-400 text-xs mt-1">1일 전</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400">
+        <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-3xl font-bold text-pink-400 mb-4">이어주개</p>
+                <p>&copy; 2025 Eeo-ju-gae. All rights reserved.</p>
+                <p class="mt-2 text-sm">AI 기반 반려동물 통합 플랫폼</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="login-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">로그인</h2>
+                <button id="close-login-modal" type="button" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form class="mt-6">
+                <input type="text" placeholder="아이디" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <input type="password" placeholder="비밀번호" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button type="submit" class="w-full bg-pink-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-pink-600">로그인</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">소셜 계정으로 간편하게 로그인</p>
+                <div class="flex justify-center gap-4 mt-4">
+                    <button type="button" class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold">G</button>
+                    <button type="button" class="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center font-bold">K</button>
+                    <button type="button" class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center font-bold text-white">N</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="signup-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">회원가입</h2>
+                <button id="close-signup-modal" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form class="mt-6">
+                 <input type="email" placeholder="이메일 주소" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                 <input type="password" placeholder="비밀번호" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                 <input type="password" placeholder="비밀번호 확인" class="w-full px-4 py-3 mt-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                <button type="submit" class="w-full bg-pink-500 text-white font-bold py-3 mt-6 rounded-md hover:bg-pink-600">가입하기</button>
+            </form>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">소셜 계정으로 간편하게 가입</p>
+                <div class="flex justify-center gap-4 mt-4">
+                    <button class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold">G</button>
+                    <button class="w-12 h-12 bg-yellow-300 rounded-full flex items-center justify-center font-bold">K</button>
+                    <button class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center font-bold text-white">N</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="main.js"></script>
+
+</body>
+</html>
