@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     title: '코숏',
                     latlng: new kakao.maps.LatLng(35.1488, 126.8774),
-                    status: '보호',
+                    status: '실종',
                     date: '3시간 전',
                     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhalmPMX2psjXDU8BbhNuSGJjAuDwjUkvpPA&s'
                 },
